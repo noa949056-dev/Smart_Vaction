@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-export const bookingSchema = Joi.object({
+export const AddBookingSchema = Joi.object({
     userId: Joi.string().required(),
     packageId: Joi.string().required(),
     guestsDetails: Joi.array().items(

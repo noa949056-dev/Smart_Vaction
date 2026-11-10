@@ -1,20 +1,33 @@
-import Joi from "joi";
+import Joi from 'joi';
 
-// יצירת / הרשמת משתמש חדש
-export const createUserSchema = Joi.object({
-    firstName: Joi.string().min(2).required(),
-    lastName: Joi.string().min(2).required(),
-    email: Joi.string().email().required(),
-    password: Joi.string().min(6).required(),
-    phone: Joi.string().required(),
-    role: Joi.string().valid('customer', 'admin').default('customer')
+// התחברות (Sign In)
+export const signInSchema = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required()
 });
 
-// עדכון משתמש
+// הרשמה (Register / Sign Up)
+export const registerSchema = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required(),
+  repeatPassword: Joi.string().valid(Joi.ref('password')).required().messages({
+    'any.only': 'הסיסמאות אינן תואמות'
+  }),
+  address: Joi.string().required(),
+  phone: Joi.string().required()
+});
+
+// עדכון סיסמה בלבד
+export const updatePasswordSchema = Joi.object({
+  password: Joi.string().required(),
+  repeatPassword: Joi.string().valid(Joi.ref('password')).required().messages({
+    'any.only': 'הסיסמאות אינן תואמות'
+  })
+});
+
+// עדכון פרטי משתמש (ללא סיסמה)
 export const updateUserSchema = Joi.object({
-    firstName: Joi.string().min(2),
-    lastName: Joi.string().min(2),
-    email: Joi.string().email(),
-    phone: Joi.string(),
-    role: Joi.string().valid('customer', 'admin')
-});
+  username: Joi.string(),
+  address: Joi.string(),
+  phone: Joi.string()
+}).min(1);

@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-export const destinationSchema = Joi.object({
+export const addDestinationSchema = Joi.object({
     regionName: Joi.string().required(),
     cityName: Joi.string().required(),
     country: Joi.string().required(),

@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-export const hotelSchema = Joi.object({
+export const addHotelSchema = Joi.object({
     destinationId: Joi.string().required(), // ObjectId as string
     name: Joi.string().required(),
     starRating: Joi.number().min(1).max(5).required(),
