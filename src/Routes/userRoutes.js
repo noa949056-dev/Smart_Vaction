@@ -1,20 +1,21 @@
 import { Router } from 'express';
-import { 
-  getAllUsers, 
-  getUserById, 
-  signUp, 
-  signIn, 
-  updateUser, 
-  updatePassword, 
-  deleteUser 
-} from './Controller/user.controller.js';
+import {
+  register,
+  login,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  updatePassword,
+  deleteUser,
+} from "../Controller/user.Controller.js";
+
 import { 
   signInSchema, 
   registerSchema, 
   updateUserSchema, 
   updatePasswordSchema 
-} from '../Validations/user.validate.js';
-import { validateBody } from '../middlewares/validateJoi.middleware.js';
+} from '../../Validations/user.validate.js';
+import { validateBody } from '../../middlewares/validateJoi.middleware.js';
 
 const router = Router();
 
@@ -25,8 +26,8 @@ const validateUpdateUser = validateBody(updateUserSchema);
 const validateUpdatePassword = validateBody(updatePasswordSchema);
 
 // נתיבי התחברות והרשמה
-router.post('/register', validateRegister, signUp);
-router.post('/login', validateSignIn, signIn);
+router.post('/register', validateRegister, register);
+router.post('/login', validateSignIn, login);
 
 // נתיבי ניהול משתמשים
 router.get('/', getAllUsers);

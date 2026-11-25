@@ -1,5 +1,90 @@
 import { isValidObjectId } from "mongoose";
-import User from "../models/user.model.js";
+import User from "../model/user.model.js";
+import jwt from "jsonwebtoken";
+import { AppError } from "../utils/AppError.js";
+
+
+//הרשמה
+export const register = async (req, res, next) => {
+  try {
+    const { username, password, address, phone } = req.body;
+
+    const user = await User.create({
+      username,
+      password,
+      address,
+      phone,
+    });
+
+    const token = jwt.sign(
+      { id: user._id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.status(201).json({
+      token,
+      user: {
+        _id: user._id,
+        username: user.username,
+        address: user.address,
+        phone: user.phone,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const login = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ username: req.body.username })
+      .select("+password");
+
+    if (!user || !(await user.comparePassword(req.body.password))) {
+      throw new AppError("invalid username or password", 401);
+    }
+
+    const token = jwt.sign(
+      { id: user._id, username: user.username },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.json({
+      token,
+      user: {
+        _id: user._id,
+        username: user.username,
+        address: user.address,
+        phone: user.phone,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updatePassword = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { password } = req.body;
+
+    const user = await User.findById(id).select("+password");
+
+    if (!user) {
+      throw new AppError("user not found", 404);
+    }
+
+    user.password = password;
+    await user.save();
+
+    res.json({ message: "Password updated successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 export const getAllUsers = async (req, res, next) => {
     try {
